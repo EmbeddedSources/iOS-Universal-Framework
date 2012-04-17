@@ -13,25 +13,26 @@ if [[ $SCRIPT_DIR != /* ]]; then
     fi
 fi
 
-OLD_DEVELOPER_PATH="/Developer"
-NEW_DEVELOPER_PATH="/Applications/Xcode.app/Contents/Developer"
+DEFAULT_GLOBAL_DEVELOPER_PATH="/Developer"
+GLOBAL_DEVELOPER_PATH="$DEFAULT_GLOBAL_DEVELOPER_PATH"
 LOCAL_DEVELOPER_PATH="$HOME/Library/Developer"
 
 TEMPLATES_DIR="Templates/Framework & Library"
 SPECIFICATIONS_DIR="Developer/Library/Xcode/Specifications"
 SPECIFICATIONS_FILE="UFW-iOSStaticFramework.xcspec"
-IOS_SPECIFICATIONS_PATH="Platforms/iPhoneOS.platform/$SPECIFICATIONS_DIR"
-SIM_SPECIFICATIONS_PATH="Platforms/iPhoneSimulator.platform/$SPECIFICATIONS_DIR"
 
 TEMPLATES_SRC_PATH="$SCRIPT_DIR/$TEMPLATES_DIR"
 TEMPLATES_DST_PATH="$LOCAL_DEVELOPER_PATH/Xcode/$TEMPLATES_DIR"
+
+IOS_SPECIFICATIONS_PATH="Platforms/iPhoneOS.platform/$SPECIFICATIONS_DIR"
+SIM_SPECIFICATIONS_PATH="Platforms/iPhoneSimulator.platform/$SPECIFICATIONS_DIR"
 
 
 echo "iOS Real Static Framework Installer"
 echo "==================================="
 echo
 echo "This will install the iOS static framework templates and support files on your computer."
-echo "Note: Real static frameworks require two xcspec files to be added to Xcode."
+echo "Note: Real static frameworks require modifications to Xcode."
 echo
 echo "*** THIS SCRIPT WILL ADD THE FOLLOWING FILES TO XCODE ***"
 echo
@@ -41,13 +42,6 @@ echo
 
 
 # Get the install path
-if [ -d "$NEW_DEVELOPER_PATH" ]
-then
-    DEFAULT_GLOBAL_DEVELOPER_PATH="$NEW_DEVELOPER_PATH"
-else
-    DEFAULT_GLOBAL_DEVELOPER_PATH="$OLD_DEVELOPER_PATH"
-fi
-
 GLOBAL_DEVELOPER_PATH=
 while [ "$GLOBAL_DEVELOPER_PATH" == "" ]
 do
@@ -78,6 +72,7 @@ done
 IOS_SPECIFICATIONS_DST_PATH="$GLOBAL_DEVELOPER_PATH/$IOS_SPECIFICATIONS_PATH"
 SIM_SPECIFICATIONS_DST_PATH="$GLOBAL_DEVELOPER_PATH/$SIM_SPECIFICATIONS_PATH"
 
+
 # Last chance to back out
 echo
 echo "I am about add the following files to support real static iOS frameworks:"
@@ -99,17 +94,17 @@ fi
 
 
 echo
-echo "[ Installing xcspec file ]"
+echo "[ Installing specification files ]"
 echo
-echo sudo cp "$SCRIPT_DIR/$SPECIFICATIONS_FILE" "$IOS_SPECIFICATIONS_DST_PATH/"
-sudo cp "$SCRIPT_DIR/$SPECIFICATIONS_FILE" "$IOS_SPECIFICATIONS_DST_PATH/"
-echo sudo cp "$SCRIPT_DIR/$SPECIFICATIONS_FILE" "$SIM_SPECIFICATIONS_DST_PATH/"
-sudo cp "$SCRIPT_DIR/$SPECIFICATIONS_FILE" "$SIM_SPECIFICATIONS_DST_PATH/"
+echo cp "$SCRIPT_DIR/$SPECIFICATIONS_FILE" "$IOS_SPECIFICATIONS_DST_PATH/"
+cp "$SCRIPT_DIR/$SPECIFICATIONS_FILE" "$IOS_SPECIFICATIONS_DST_PATH/"
+echo cp "$SCRIPT_DIR/$SPECIFICATIONS_FILE" "$SIM_SPECIFICATIONS_DST_PATH/"
+cp "$SCRIPT_DIR/$SPECIFICATIONS_FILE" "$SIM_SPECIFICATIONS_DST_PATH/"
 
 
 # Install templates
 echo
-echo "[ Installing templates ]"
+echo "[ Installing templates into $TEMPLATES_DST_PATH ]"
 echo
 echo mkdir -p "$TEMPLATES_DST_PATH"
 mkdir -p "$TEMPLATES_DST_PATH"
