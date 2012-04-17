@@ -13,19 +13,18 @@ if [[ $SCRIPT_DIR != /* ]]; then
     fi
 fi
 
-DEFAULT_GLOBAL_DEVELOPER_PATH="/Developer"
-GLOBAL_DEVELOPER_PATH="$DEFAULT_GLOBAL_DEVELOPER_PATH"
+OLD_DEVELOPER_PATH="/Developer"
+NEW_DEVELOPER_PATH="/Applications/Xcode.app/Contents/Developer"
 LOCAL_DEVELOPER_PATH="$HOME/Library/Developer"
 
 TEMPLATES_DIR="Templates/Framework & Library"
 SPECIFICATIONS_DIR="Developer/Library/Xcode/Specifications"
 SPECIFICATIONS_FILE="UFW-iOSStaticFramework.xcspec"
+IOS_SPECIFICATIONS_PATH="Platforms/iPhoneOS.platform/$SPECIFICATIONS_DIR"
+SIM_SPECIFICATIONS_PATH="Platforms/iPhoneSimulator.platform/$SPECIFICATIONS_DIR"
 
 TEMPLATES_SRC_PATH="$SCRIPT_DIR/$TEMPLATES_DIR"
 TEMPLATES_DST_PATH="$LOCAL_DEVELOPER_PATH/Xcode/$TEMPLATES_DIR"
-
-IOS_SPECIFICATIONS_PATH="Platforms/iPhoneOS.platform/$SPECIFICATIONS_DIR"
-SIM_SPECIFICATIONS_PATH="Platforms/iPhoneSimulator.platform/$SPECIFICATIONS_DIR"
 
 
 echo "iOS Real Static Framework Uninstaller"
@@ -36,6 +35,13 @@ echo
 
 
 # Get the install path
+if [ -d "$NEW_DEVELOPER_PATH" ]
+then
+    DEFAULT_GLOBAL_DEVELOPER_PATH="$NEW_DEVELOPER_PATH"
+else
+    DEFAULT_GLOBAL_DEVELOPER_PATH="$OLD_DEVELOPER_PATH"
+fi
+
 GLOBAL_DEVELOPER_PATH=
 while [ "$GLOBAL_DEVELOPER_PATH" == "" ]
 do
@@ -56,7 +62,7 @@ do
 
     if [ ! -d "${GLOBAL_DEVELOPER_PATH}/${IOS_SPECIFICATIONS_PATH}" ] || [ ! -d "${GLOBAL_DEVELOPER_PATH}/${SIM_SPECIFICATIONS_PATH}" ]
     then
-        echo "Could not find Xcode files in $GLOBAL_DEVELOPER_PATH. Please make sure you typed it correctly."
+        echo "Could not find Xcode files in \"$GLOBAL_DEVELOPER_PATH\". Please make sure you typed it correctly."
         echo "You should see the path \"$IOS_SPECIFICATIONS_PATH\" inside of it."
         echo
         GLOBAL_DEVELOPER_PATH=
@@ -89,10 +95,10 @@ fi
 echo
 echo "[ Removing custom specification files ]"
 echo
-echo rm -f "$IOS_SPECIFICATIONS_DST_PATH/$SPECIFICATIONS_FILE"
-rm -f "$IOS_SPECIFICATIONS_DST_PATH/$SPECIFICATIONS_FILE"
-echo rm -f "$SIM_SPECIFICATIONS_DST_PATH/$SPECIFICATIONS_FILE"
-rm -f "$SIM_SPECIFICATIONS_DST_PATH/$SPECIFICATIONS_FILE"
+echo sudo rm -f "$IOS_SPECIFICATIONS_DST_PATH/$SPECIFICATIONS_FILE"
+sudo rm -f "$IOS_SPECIFICATIONS_DST_PATH/$SPECIFICATIONS_FILE"
+echo sudo rm -f "$SIM_SPECIFICATIONS_DST_PATH/$SPECIFICATIONS_FILE"
+sudo rm -f "$SIM_SPECIFICATIONS_DST_PATH/$SPECIFICATIONS_FILE"
 
 
 # Remove templates
